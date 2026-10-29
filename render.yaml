@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: smartcut
+    runtime: docker
+    plan: free
+    healthCheckPath: /api/job
+    envVars:
+      - key: LITE
+        value: "1"
+      - key: GROQ_API_KEY
+        sync: false

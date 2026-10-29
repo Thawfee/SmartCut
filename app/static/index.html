@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SmartCut</title>
+<style>
+:root{--bg:#0b0f14;--panel:#121821;--panel2:#18202b;--line:#253041;--text:#e8eef5;--mute:#8a97a8;--acc:#2dd4bf;--acc2:#0ea5e9;--warn:#f5a524;--bad:#f87171;--ok:#34d399;--info:#93c5fd}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--text);font:14px/1.45 system-ui,"Segoe UI",Roboto,sans-serif}
+button,select,input,textarea{font:inherit;color:inherit}
+header{display:flex;align-items:center;gap:16px;padding:10px 18px;border-bottom:1px solid var(--line);background:var(--panel);position:sticky;top:0;z-index:5}
+.logo{font-weight:800;font-size:18px;letter-spacing:-.01em}.logo b{color:var(--acc)}
+.steps{display:flex;gap:6px;margin:0 auto;flex-wrap:wrap}
+.step{padding:5px 12px;border-radius:999px;border:1px solid var(--line);color:var(--mute);font-size:12px;font-weight:600}
+.step.done{color:var(--ok);border-color:#1f5b47}.step.now{color:#04201c;background:var(--acc);border-color:var(--acc)}
+main{display:grid;grid-template-columns:320px minmax(0,1fr) 380px;gap:12px;padding:12px;height:calc(100vh - 54px)}
+@media(max-width:1150px){main{grid-template-columns:1fr;height:auto}}
+section{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px;overflow:auto;min-height:0}
+h2{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);margin:0 0 10px;display:flex;align-items:center;gap:8px}
+h2 .n{background:var(--acc);color:#04201c;border-radius:50%;width:20px;height:20px;display:inline-grid;place-items:center;font-size:11px}
+.hint{color:var(--mute);font-size:12px;margin:4px 0 8px}
+label{display:block;color:var(--mute);font-size:12px;margin:12px 0 4px}
+textarea,input[type=text],select{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px}
+textarea:focus,select:focus,input:focus{outline:2px solid #2dd4bf55;border-color:var(--acc)}
+.btn{background:var(--acc);color:#04201c;border:0;border-radius:8px;padding:9px 14px;font-weight:700;cursor:pointer}
+.btn:hover{filter:brightness(1.08)}.btn:disabled{opacity:.45;cursor:not-allowed}
+.ghost{background:transparent;color:var(--text);border:1px solid var(--line);border-radius:7px;padding:5px 9px;cursor:pointer;font-size:12px}
+.ghost:hover{border-color:var(--acc);color:var(--acc)}.ghost.danger:hover{border-color:var(--bad);color:var(--bad)}
+.full{width:100%;margin-top:10px}
+.drop{border:2px dashed var(--line);border-radius:10px;padding:16px;text-align:center;color:var(--mute);cursor:pointer;transition:.15s}
+.drop:hover,.drop.over{border-color:var(--acc);color:var(--text);background:#2dd4bf0d}
+.drop b{color:var(--text)}
+.src{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--line);font-size:13px}
+.src .dot{width:10px;height:10px;border-radius:3px;flex:none}.src .nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tag{font-size:10px;padding:1px 6px;border-radius:999px;border:1px solid var(--line);color:var(--mute);white-space:nowrap}
+.tag.w{color:var(--warn);border-color:#5c4214}.tag.g{color:var(--ok);border-color:#1f5b47}
+.row{display:flex;gap:8px}.row>*{flex:1}
+.stats{display:flex;gap:16px;font-size:12px;color:var(--mute);flex-wrap:wrap;margin-bottom:8px}.stats b{color:var(--text);font-size:14px}
+.tl{display:flex;height:34px;border-radius:8px;overflow:hidden;background:var(--bg);border:1px solid var(--line);margin-bottom:6px}
+.tl div{height:100%;border-right:1px solid var(--bg);cursor:pointer;opacity:.85;font-size:10px;color:#04201c;font-weight:700;padding:2px 3px;overflow:hidden;white-space:nowrap}
+.tl div:hover{opacity:1}.tl div.w{background-image:repeating-linear-gradient(135deg,transparent 0 6px,#0003 6px 9px)}
+.tabs{display:flex;gap:6px;margin:10px 0}.tabs button{background:transparent;border:1px solid var(--line);color:var(--mute);border-radius:999px;padding:4px 11px;font-size:12px;cursor:pointer}
+.tabs button.on{background:var(--panel2);color:var(--text);border-color:var(--acc)}
+.seg{background:var(--panel2);border:1px solid var(--line);border-left:4px solid var(--ok);border-radius:10px;padding:9px 11px;margin-bottom:8px;transition:.2s}
+.seg.off{border-left-color:#4b5563;opacity:.6}.seg.off .txt{text-decoration:line-through;text-decoration-color:#f8717188}
+.seg.flag{border-left-color:var(--warn)}.seg.hl{box-shadow:0 0 0 2px var(--acc)}
+.meta{display:flex;gap:8px;align-items:center;font-size:12px;color:var(--mute);flex-wrap:wrap}
+.meta .id{color:var(--text);font-weight:800}
+.txt{margin:6px 0 3px;padding:4px 6px;border-radius:6px;border:1px solid transparent;font-size:15px;cursor:text}
+.txt:hover{border-color:var(--line)}.txt:focus{outline:none;border-color:var(--acc);background:var(--bg)}
+.why{font-size:12px;color:var(--mute)}.why.k{color:#86efac}.why.d{color:#fca5a5}
+.wm{display:flex;gap:8px;align-items:flex-start;font-size:12px;color:var(--warn);margin-top:5px}.wm.info{color:var(--info)}
+.wm span{flex:1}
+.acts{display:flex;gap:5px;margin-top:8px;flex-wrap:wrap;align-items:center}
+.acts select{width:auto;padding:4px 6px;font-size:12px}
+video{width:100%;max-height:340px;background:#000;border-radius:10px;display:block}
+.now{font-size:12px;color:var(--mute);margin:6px 0 2px;min-height:18px}
+.ver{padding:10px 0;border-bottom:1px solid var(--line)}
+.ver .top{display:flex;align-items:center;gap:8px}.ver .top .n{flex:1}
+.ver .links{display:flex;gap:10px;margin-top:6px;font-size:12px;align-items:center;flex-wrap:wrap}
+.ver a{color:var(--acc);text-decoration:none}.ver a:hover{text-decoration:underline}
+.log{font:12px ui-monospace,Consolas,monospace;color:var(--mute);white-space:pre-wrap;max-height:160px;overflow:auto}
+.empty{color:var(--mute);text-align:center;padding:50px 16px;line-height:1.7}
+.empty b{color:var(--text)}
+.overlay{position:fixed;inset:0;background:#000b;display:none;align-items:center;justify-content:center;z-index:20}
+.overlay .box{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:22px;width:min(440px,90vw)}
+.bar{height:8px;background:var(--bg);border-radius:99px;overflow:hidden;margin:12px 0 6px}.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--acc),var(--acc2));width:0;transition:width .4s}
+.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:var(--panel2);border:1px solid var(--line);padding:10px 16px;border-radius:10px;z-index:30;display:none;max-width:90vw}
+.toast.err{border-color:var(--bad);color:#fecaca}
+input[type=range]{width:100%;accent-color:var(--acc)}
+.small{font-size:12px;color:var(--mute)}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">Smart<b>Cut</b></div>
+  <div class="steps" id="steps"></div>
+  <button class="ghost" id="undo" onclick="edit('undo')" title="Ctrl+Z">↶ Undo</button>
+  <button class="ghost danger" onclick="if(confirm('Start a new project? All uploads and edits will be cleared.'))call('/api/reset',{})">New project</button>
+</header>
+<main>
+  <section>
+    <h2><span class="n">1</span> Add media</h2>
+    <div class="drop" id="dropSrc" onclick="$('src').click()"><b>Drop recordings here</b><br>or click to choose<br><span class="small">videos, phone clips, voice notes, B-roll</span></div>
+    <input type="file" id="src" multiple accept="video/*,audio/*" hidden onchange="upload(this.files,'source');this.value=''">
+    <div id="sources"></div>
+    <label>Background music (optional)</label>
+    <div class="drop" id="dropMus" onclick="$('mus').click()" style="padding:10px">Drop music file or click</div>
+    <input type="file" id="mus" accept="audio/*" hidden onchange="upload(this.files,'music');this.value=''">
+    <div id="music"></div>
+
+    <h2 style="margin-top:22px"><span class="n">2</span> Tell the story</h2>
+    <label>Brief: what should the video say?</label>
+    <textarea id="brief" rows="4" placeholder="e.g. A highlight video of the hackathon: who joined, what teams built, and how they solved real problems with AI."></textarea>
+    <label>Caption fixes (optional, one per line)</label>
+    <textarea id="gloss" rows="3" placeholder="F F mpeg => FFmpeg&#10;ryhathon => RYHATHON"></textarea>
+    <div class="row">
+      <div><label>Language</label><select id="lang"><option value="">Auto detect</option><option value="en">English</option><option value="ta">Tamil</option><option value="hi">Hindi</option></select></div>
+      <div><label>Accuracy</label><select id="acc"><option value="base">Fast</option><option value="small">Better (slower)</option></select></div>
+    </div>
+    <button class="btn full" id="go" onclick="processAll()">✨ Build rough cut</button>
+    <div class="hint" id="goHint"></div>
+    <div class="hint" id="engine"></div>
+  </section>
+
+  <section id="mid">
+    <h2><span class="n">3</span> Edit the story</h2>
+    <div id="editor"><div class="empty">Add your recordings, write a short brief, then press <b>✨ Build rough cut</b>.<br>SmartCut will listen to everything, remove pauses, repeats, false starts and mic checks,<br>and show every decision here so you can change it.</div></div>
+  </section>
+
+  <section>
+    <h2>Preview</h2>
+    <video id="player" controls playsinline></video>
+    <div class="now" id="now">Click ▶ on any clip to hear the original recording.</div>
+    <h2 style="margin-top:16px"><span class="n">4</span> Export versions</h2>
+    <div class="hint">Every version is built from the same timeline. Change one clip → all versions follow.</div>
+    <div id="vers"></div>
+    <button class="btn full" id="renderAll" onclick="render('all')">🎬 Render all versions</button>
+    <div id="musicVol"></div>
+    <h2 style="margin-top:18px">Change history</h2>
+    <div class="log" id="log"></div>
+    <p class="small" style="margin-top:12px"><a style="color:var(--acc)" href="/files/project.json" download>⬇ Download editable project (project.json)</a></p>
+  </section>
+</main>
+<div class="overlay" id="ov"><div class="box"><b id="ovT">Working…</b><div class="bar"><i id="ovB"></i></div><div class="small" id="ovM"></div></div></div>
+<div class="toast" id="toast"></div>
+<script>
+const $=id=>document.getElementById(id);
+let P=null, filter='all', polling=false;
+const fmt=s=>{s=Math.max(0,s||0);return `${Math.floor(s/60)}:${String(Math.floor(s%60)).padStart(2,'0')}`};
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function toast(msg,err){const t=$('toast');t.textContent=msg;t.className='toast'+(err?' err':'');t.style.display='block';clearTimeout(t._h);t._h=setTimeout(()=>t.style.display='none',err?6000:2500)}
+
+async function call(url,body){
+  try{
+    const r=await fetch(url,body===undefined?{}:{method:'POST',body:JSON.stringify(body),headers:{'Content-Type':'application/json'}});
+    const d=await r.json().catch(()=>({detail:r.statusText}));
+    if(!r.ok) throw new Error(typeof d.detail==='string'?d.detail:JSON.stringify(d.detail));
+    P=d; draw(); if(P.job&&P.job.status==='running') poll(); return d;
+  }catch(e){toast(e.message,true)}
+}
+function upload(files,kind){
+  if(!files||!files.length) return;
+  const f=new FormData(); for(const x of files) f.append('files',x); f.append('kind',kind);
+  const x=new XMLHttpRequest(); x.open('POST','/api/upload');
+  showOv('Uploading '+files.length+' file(s)…',0,'');
+  x.upload.onprogress=e=>{if(e.lengthComputable) showOv('Uploading…',e.loaded/e.total*100,Math.round(e.loaded/1e6)+' / '+Math.round(e.total/1e6)+' MB')};
+  x.onload=()=>{hideOv();let d;try{d=JSON.parse(x.responseText)}catch{d={detail:x.statusText}}
+    if(x.status>=300) return toast(d.detail||'Upload failed',true); P=d; draw(); toast('Uploaded ✓')};
+  x.onerror=()=>{hideOv();toast('Upload failed — is the app still running?',true)};
+  x.send(f);
+}
+for(const [id,kind] of [['dropSrc','source'],['dropMus','music']]){
+  const el=$(id);
+  el.ondragover=e=>{e.preventDefault();el.classList.add('over')};
+  el.ondragleave=()=>el.classList.remove('over');
+  el.ondrop=e=>{e.preventDefault();el.classList.remove('over');upload(e.dataTransfer.files,kind)};
+}
+function showOv(t,pct,m){$('ov').style.display='flex';$('ovT').textContent=t;$('ovB').style.width=(pct||0)+'%';$('ovM').textContent=m||''}
+function hideOv(){$('ov').style.display='none'}
+async function poll(){
+  if(polling) return; polling=true;
+  while(true){
+    let j; try{j=await (await fetch('/api/job')).json()}catch{await new Promise(r=>setTimeout(r,1000));continue}
+    if(j.status==='running'){showOv(j.kind==='process'?'Building rough cut…':'Rendering…',j.pct,j.msg);await new Promise(r=>setTimeout(r,800));continue}
+    hideOv(); polling=false;
+    await call('/api/project');
+    if(j.status==='error') toast('Problem: '+j.error,true);
+    else if(j.status==='done') toast(j.kind==='process'?'Rough cut ready ✓ — review the clips':'Render finished ✓');
+    if(j.status==='done'&&j.kind==='render'){const v=Object.entries(P.renders).sort((a,b)=>a[1].at<b[1].at?1:-1)[0]; if(v) playRender(v[0])}
+    return;
+  }
+}
+function processAll(){
+  if(!P.sources.length) return toast('Add at least one recording first',true);
+  if(!$('brief').value.trim()) return toast('Write a short brief first — it tells SmartCut what the story is',true);
+  call('/api/process',{brief:$('brief').value,glossary:$('gloss').value,language:$('lang').value,accuracy:$('acc').value});
+}
+function edit(op,seg,value){return call('/api/edit',{op,seg,value})}
+function render(v){call('/api/render/'+v,{})}
+function playOriginal(sid){
+  const s=P.segments.find(x=>x.id===sid), src=P.sources.find(x=>x.id===s.source), v=$('player');
+  v.src=`/uploads/${encodeURIComponent(src.file)}#t=${s.start},${s.end}`;
+  v.ontimeupdate=()=>{if(v.currentTime>=s.end-0.02) v.pause()};
+  v.play().catch(()=>{});
+  $('now').innerHTML=`<b>Original</b> ${esc(src.name)} · ${fmt(s.start)}–${fmt(s.end)} · recognised “${esc(s.original_text)}” (${Math.round(s.confidence*100)}% sure)`;
+  document.querySelectorAll('.seg').forEach(e=>e.classList.toggle('hl',e.dataset.id===sid));
+}
+function playRender(k){
+  const r=P.renders[k], v=$('player'); v.ontimeupdate=null;
+  v.src=`/files/${r.mp4}?t=${Date.now()}`; v.play().catch(()=>{});
+  $('now').innerHTML=`<b>${esc(P.versions[k].label)}</b> ${P.versions[k].ratio} · ${fmt(r.duration)}${r.captions_burned?'':' · captions in .srt file'}`;
+}
+function jump(id){filter='all';draw();const e=document.querySelector(`.seg[data-id="${id}"]`);if(e){e.scrollIntoView({behavior:'smooth',block:'center'});e.classList.add('hl');setTimeout(()=>e.classList.remove('hl'),1500)}}
+function setFilter(f){filter=f;draw()}
+function saveText(el,id){const t=el.innerText.trim(), s=P.segments.find(x=>x.id===id); if(t&&t!==s.text) edit('text',id,t)}
+
+function draw(){
+  if(!P) return;
+  const has=P.sources.length>0, cut=P.segments.length>0, rendered=Object.keys(P.renders).length>0;
+  const st=[['Add media',has],['Brief',cut],['Edit',cut],['Export',rendered]];
+  let cur=st.findIndex(x=>!x[1]); if(cur<0) cur=3;
+  $('steps').innerHTML=st.map((x,i)=>`<span class="step ${i<cur?'done':i===cur?'now':''}">${i<cur?'✓ ':''}${i+1}. ${x[0]}</span>`).join('');
+  $('undo').disabled=!P.can_undo;
+  $('engine').innerHTML=P.engine==='cloud'?'Speech engine: Whisper (cloud) ✓':P.engine==='local'?'Speech engine: Whisper (this computer) ✓':'<span style="color:var(--warn)">⚠ No speech engine — new uploads cannot be transcribed. The demo project still works.</span>';
+  if(document.activeElement!==$('brief')&&P.brief) $('brief').value=P.brief;
+  if(document.activeElement!==$('gloss')&&Object.keys(P.glossary||{}).length) $('gloss').value=Object.entries(P.glossary).map(([a,b])=>`${a} => ${b}`).join('\n');
+  if(P.language!==undefined&&document.activeElement!==$('lang')) $('lang').value=P.language||'';
+  const pending=P.sources.filter(s=>!s.transcribed).length;
+  $('go').textContent=cut?(pending?`✨ Add ${pending} new recording(s) to the cut`:'✨ Rebuild with this brief'):'✨ Build rough cut';
+  $('goHint').textContent=cut&&!pending?'Your manual choices are kept. Caption fixes apply instantly when you rebuild.':'';
+
+  const srcBy=Object.fromEntries(P.sources.map(s=>[s.id,s]));
+  $('sources').innerHTML=P.sources.map(s=>`<div class="src"><span class="dot" style="background:${s.color}"></span>
+    <span class="nm" title="${esc(s.name)}"><b>${s.id}</b> ${esc(s.name)}</span><span class="small">${fmt(s.duration)}</span>
+    ${!s.has_video?'<span class="tag w">audio only</span>':''}${s.transcribed&&!s.speech&&s.has_video?'<span class="tag g">B-roll</span>':''}
+    ${s.has_video&&s.height>s.width?'<span class="tag">portrait</span>':''}${!s.transcribed?'<span class="tag">new</span>':''}
+    <button class="ghost danger" title="Remove" onclick="if(confirm('Remove ${s.id}?'))call('/api/remove_source/${s.id}',{})">✕</button></div>`).join('');
+  $('music').innerHTML=P.music?`<div class="src"><span class="dot" style="background:#e879f9"></span><span class="nm">♪ ${esc(P.music.replace(/^\d+_/,''))}</span><button class="ghost danger" onclick="call('/api/remove_source/music',{})">✕</button></div>`:'';
+
+  if(cut){
+    const by=Object.fromEntries(P.segments.map(s=>[s.id,s]));
+    const wb={}, warnSeg=new Set(); P.warnings.forEach(w=>{if(w.seg){(wb[w.seg]=wb[w.seg]||[]).push(w); if(w.level==='warn') warnSeg.add(w.seg)}});
+    const kept=P.order.map(i=>by[i]).filter(s=>s.keep), raw=P.sources.reduce((a,s)=>a+s.duration,0);
+    const total=P.durations.landscape||0, nW=warnSeg.size;
+    const videoS=P.sources.filter(s=>s.has_video);
+    let list=P.order.map(i=>by[i]);
+    if(filter==='kept') list=list.filter(s=>s.keep); if(filter==='removed') list=list.filter(s=>!s.keep); if(filter==='warn') list=list.filter(s=>warnSeg.has(s.id));
+    const firstKept=kept[0]&&kept[0].id;
+    $('editor').innerHTML=`
+      <div class="stats"><span>Raw footage<br><b>${fmt(raw)}</b></span><span>Final cut<br><b>${fmt(total)}</b></span>
+        <span>Clips kept<br><b>${kept.length} / ${P.segments.length}</b></span><span>Needs a look<br><b style="color:${nW?'var(--warn)':'var(--ok)'}">${nW}</b></span></div>
+      <div class="tl">${kept.map(s=>{const d=s.end-s.start;const c=s.cover?srcBy[s.cover.source]:srcBy[s.source];
+        return `<div style="flex:${d};background:${c?c.color:'#555'}" class="${warnSeg.has(s.id)?'w':''}" title="${s.id}: ${esc(s.text)}" onclick="jump('${s.id}')">${s.id}</div>`}).join('')}</div>
+      <div class="small">Final timeline · colour = which recording the picture comes from · click a block to find the clip</div>
+      <div class="tabs">${[['all','All '+P.segments.length],['kept','Kept '+kept.length],['removed','Removed '+(P.segments.length-kept.length)],['warn','Needs a look '+warnSeg.size]].map(([k,l])=>`<button class="${filter===k?'on':''}" onclick="setFilter('${k}')">${l}</button>`).join('')}
+        <button style="margin-left:auto" onclick="if(confirm('Rebuild the cut automatically? Your manual keep/remove choices will be reset.'))edit('reanalyse')">↻ Auto-cut again</button></div>
+      ${list.map(s=>{const src=srcBy[s.source], w=wb[s.id]||[], hasWarn=w.some(x=>x.level==='warn');
+        return `<div class="seg ${s.keep?(hasWarn?'flag':''):'off'}" data-id="${s.id}">
+        <div class="meta"><span class="dot" style="width:9px;height:9px;border-radius:3px;background:${src.color}"></span><span class="id">${s.id}</span>
+          <span>${src.id} · ${esc(src.name)} · ${fmt(s.start)}–${fmt(s.end)} (${(s.end-s.start).toFixed(1)}s)</span>
+          ${s.id===firstKept?'<span class="tag g">INTRO</span>':''}${s.cover?`<span class="tag">B-roll: ${s.cover.source}</span>`:''}
+          ${s.text!==s.original_text?'<span class="tag">caption fixed</span>':''}</div>
+        <div class="txt" contenteditable="true" spellcheck="false" title="Click to correct the caption" onblur="saveText(this,'${s.id}')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur()}">${esc(s.text)}</div>
+        <div class="why ${s.keep?'k':'d'}">${s.keep?'✓ Kept':'✕ Removed'} — ${esc(s.reason)}</div>
+        ${w.map(x=>`<div class="wm ${x.level==='info'?'info':''}"><span>${x.level==='info'?'ℹ':'⚠'} ${esc(x.msg)}</span><button class="ghost" onclick="edit('dismiss','${s.id}','${s.id}:${x.type}')">Looks fine ✓</button></div>`).join('')}
+        <div class="acts">
+          <button class="ghost" onclick="playOriginal('${s.id}')">▶ Original</button>
+          <button class="ghost ${s.keep?'danger':''}" onclick="edit('toggle','${s.id}')">${s.keep?'✕ Remove':'↺ Restore'}</button>
+          ${s.keep?`<button class="ghost" onclick="edit('up','${s.id}')" title="Move earlier">↑</button><button class="ghost" onclick="edit('down','${s.id}')" title="Move later">↓</button>`:''}
+          ${s.id!==firstKept?`<button class="ghost" onclick="edit('intro','${s.id}')">⭐ Make intro</button>`:''}
+          ${videoS.length?`<select onchange="edit('cover','${s.id}',this.value)" title="Show B-roll picture while this speech plays"><option value="">Picture: own recording</option>${videoS.filter(v=>v.id!==s.source).map(v=>`<option value="${v.id}" ${s.cover&&s.cover.source===v.id?'selected':''}>Picture: B-roll ${v.id}</option>`).join('')}</select>`:''}
+        </div></div>`}).join('')||'<div class="empty">Nothing here.</div>'}`;
+  }else{
+    $('editor').innerHTML=`<div class="empty">${has?'Now write a short brief on the left and press <b>✨ Build rough cut</b>.':'Add your recordings, write a short brief, then press <b>✨ Build rough cut</b>.'}<br>SmartCut listens to everything, removes pauses, repeats, false starts and mic checks,<br>and shows every decision here so you can change it.
+      ${P.demo_available&&!has?`<div style="margin-top:22px"><button class="btn" onclick="call('/api/demo',{})">▶ Try the demo project</button><div class="small" style="margin-top:6px">5 sample recordings + music · ready in a few seconds</div></div>`:''}</div>`;
+  }
+
+  $('vers').innerHTML=Object.entries(P.versions).map(([k,v])=>{const r=P.renders[k];
+    return `<div class="ver"><div class="top"><div class="n"><b>${esc(v.label)}</b> <span class="small">${v.ratio} · ${v.width}×${v.height} · ${fmt(P.durations[k]||0)}</span></div>
+      <button class="ghost" ${cut?'':'disabled'} onclick="render('${k}')">${r?(r.stale?'⟳ Update':'Re-render'):'Render'}</button></div>
+      ${k==='short'?`<div class="links"><span class="small">Max length</span><select style="width:auto;padding:2px 6px" onchange="edit('version','short',this.value)">${[15,30,45,60].map(n=>`<option ${v.max_seconds==n?'selected':''}>${n}</option>`).join('')}</select><span class="small">seconds</span></div>`:''}
+      ${r?`<div class="links">${r.stale?'<span class="tag w">out of date: you edited after rendering</span>':'<span class="tag g">up to date</span>'}
+        <a href="#" onclick="playRender('${k}');return false">▶ Play</a><a href="/files/${r.mp4}" download>⬇ MP4</a><a href="/files/${r.srt}" download>⬇ Captions .srt</a></div>`:''}</div>`}).join('');
+  $('renderAll').disabled=!cut;
+  $('musicVol').innerHTML=P.music?`<label>Music volume (dips automatically when people talk)</label><input type="range" min="0" max="1" step="0.05" value="${P.music_volume}" onchange="edit('music_volume',null,this.value)">`:'';
+  $('log').textContent=(P.log||[]).slice(-30).reverse().join('\n');
+}
+document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='z'&&!e.target.isContentEditable&&!/TEXTAREA|INPUT/.test(e.target.tagName)){e.preventDefault();if(P&&P.can_undo)edit('undo')}});
+call('/api/project');
+</script>
+</body>
+</html>

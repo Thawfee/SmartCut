@@ -1,0 +1,18 @@
+BRIEF (copy this into the app):
+Make a highlight video about the RYHATHON hackathon: what it is, who joined, what teams built, and how students solved real-world problems with AI.
+
+CAPTION FIXES (copy into "Caption fixes"):
+F F mpeg => FFmpeg
+ryhathon => RYHATHON
+Jarvis => Jaarvis
+
+WHAT IS HIDDEN IN THESE FILES (to test the app):
+- 01 Cam A: long pauses, a "mic check" mistake, a false start ("Our main goal..."), a repeated sentence, and a line starting with "And that is why..." that depends on the line before it.
+- 02 Cam B: the SAME welcome line as Cam A from another angle (multi-camera duplicate), recorded much quieter (tests loudness balancing).
+- 03 Phone: portrait video, "Um" filler, a repeated sentence, a technical term (FFmpeg) the captions may get wrong.
+- 04 Voice note: audio only, no picture (app should warn, not invent visuals).
+- 05 B-roll: hall footage with no speech, use "Cover with B-roll" on a clip.
+- 06 Music: background track, should get quieter when people speak (ducking).
+
+DEMO FLOW: upload 01-05 as recordings, 06 as music, paste brief + fixes, Analyse.
+Then: remove a clip, fix a caption, set a new intro, render 16:9 and 9:16, check everything updated together.

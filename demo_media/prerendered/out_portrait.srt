@@ -1,0 +1,95 @@
+1
+00:00:00,080 --> 00:00:01,200
+Hello everyone.
+
+2
+00:00:01,310 --> 00:00:04,470
+Welcome to RYHATHON, a thirty six hour
+
+3
+00:00:04,470 --> 00:00:07,250
+hackathon at Francis Xavier Engineering College.
+
+4
+00:00:07,360 --> 00:00:09,830
+This year more than two hundred students
+
+5
+00:00:09,830 --> 00:00:11,700
+from across India joined us.
+
+6
+00:00:11,810 --> 00:00:14,450
+Our main goal was to solve real
+
+7
+00:00:14,450 --> 00:00:16,050
+world problems with technology.
+
+8
+00:00:16,160 --> 00:00:19,370
+Teams built solutions for healthcare, climate and
+
+9
+00:00:19,370 --> 00:00:22,650
+smart cities, in just thirty six hours.
+
+10
+00:00:22,760 --> 00:00:25,390
+Mentors from industry guided every team through
+
+11
+00:00:25,390 --> 00:00:26,230
+the night.
+
+12
+00:00:26,340 --> 00:00:28,570
+And that is why the final projects
+
+13
+00:00:28,570 --> 00:00:29,620
+were so strong.
+
+14
+00:00:29,730 --> 00:00:31,730
+The energy in the hall was amazing
+
+15
+00:00:31,730 --> 00:00:32,410
+all night.
+
+16
+00:00:32,520 --> 00:00:34,870
+Hi, I am Arun from team Jaarvis.
+
+17
+00:00:34,980 --> 00:00:37,410
+We built an AI tool that edits
+
+18
+00:00:37,410 --> 00:00:38,210
+videos automatically.
+
+19
+00:00:38,320 --> 00:00:40,830
+The hardest part was keeping captions in
+
+20
+00:00:40,830 --> 00:00:42,360
+sync after every edit.
+
+21
+00:00:42,470 --> 00:00:44,460
+We used Whisper and FFmpeg
+
+22
+00:00:44,460 --> 00:00:46,280
+to do it, and it worked.
+
+23
+00:00:46,390 --> 00:00:48,700
+The winners will be announced tomorrow at
+
+24
+00:00:48,700 --> 00:00:49,790
+the closing ceremony.

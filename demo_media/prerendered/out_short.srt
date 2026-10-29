@@ -1,0 +1,51 @@
+1
+00:00:00,080 --> 00:00:01,200
+Hello everyone.
+
+2
+00:00:01,310 --> 00:00:04,470
+Welcome to RYHATHON, a thirty six hour
+
+3
+00:00:04,470 --> 00:00:07,250
+hackathon at Francis Xavier Engineering College.
+
+4
+00:00:07,360 --> 00:00:09,830
+This year more than two hundred students
+
+5
+00:00:09,830 --> 00:00:11,700
+from across India joined us.
+
+6
+00:00:11,810 --> 00:00:14,450
+Our main goal was to solve real
+
+7
+00:00:14,450 --> 00:00:16,050
+world problems with technology.
+
+8
+00:00:16,160 --> 00:00:19,370
+Teams built solutions for healthcare, climate and
+
+9
+00:00:19,370 --> 00:00:22,650
+smart cities, in just thirty six hours.
+
+10
+00:00:22,760 --> 00:00:25,390
+Mentors from industry guided every team through
+
+11
+00:00:25,390 --> 00:00:26,230
+the night.
+
+12
+00:00:26,340 --> 00:00:28,770
+We built an AI tool that edits
+
+13
+00:00:28,770 --> 00:00:29,570
+videos automatically.
